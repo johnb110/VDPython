@@ -3,9 +3,7 @@ Interface to VulDeePecker project
 """
 import sys
 import pandas
-
-def clean_gadget(gadget):
-    return gadget
+from CleanGadget import clean_gadget
 
 def vectorize(gadget):
     return gadget
@@ -64,7 +62,10 @@ def main():
     filename = sys.argv[1]
     parse_file(filename)
     gadgets = []
+    count = 0
     for gadget, val in parse_file(filename):
+        count += 1
+        print("Collecting gadgets...", count, end="\r")
         vector = vectorize(gadget)
         row = {"gadget" : vector, "val" : val}
         gadgets.append(row)
