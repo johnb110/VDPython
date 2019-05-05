@@ -37,7 +37,8 @@ def clean_gadget(gadget):
     # regular expression to find function name candidates
     rx_fun = re.compile(r'\b([_A-Za-z]\w*)\b(?=\s*\()')
     # regular expression to find variable name candidates
-    rx_var = re.compile(r'\b([_A-Za-z]\w*)\b(?!\s*\()')
+    #rx_var = re.compile(r'\b([_A-Za-z]\w*)\b(?!\s*\()')
+    rx_var = re.compile(r'\b([_A-Za-z]\w*)\b(?:(?=\s*\w+\()|(?!\s*\w+))(?!\s*\()')
 
     # final cleaned gadget output to return to interface
     cleaned_gadget = []
@@ -114,7 +115,10 @@ if __name__ == '__main__':
 
     test_gadgetline = ['function(File file, Buffer buff)', 'this is a comment test */']
 
+    split_test = 'printf ( " " , variable ++  )'.split()
+
     print(clean_gadget(test_gadget))
     print(clean_gadget(test_gadget2))
     print(clean_gadget(test_gadget3))
     print(clean_gadget(test_gadgetline))
+    print(split_test)
