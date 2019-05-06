@@ -5,9 +5,10 @@ import sys
 import pandas
 from CleanGadget import clean_gadget
 from tokenize_gadget import tokenize_df
+from tokenize_gadget import vectorize
 
-def vectorize(gadget):
-    return gadget
+#def vectorize(gadget):
+    #return gadget
 
 class NeuralNet:
     def __init__(self, data):
@@ -71,9 +72,10 @@ def main():
         row = {"gadget" : vector, "val" : val}
         gadgets.append(row)
     df = pandas.DataFrame(gadgets)
-    df = tokenize_df(df)
+    print(df)
+    #df = tokenize_df(df)
 
-    print(df['tokenized_gadget'][0])
+    #print(df['tokenized_gadget'][0])
     nn = NeuralNet(df)
     nn.train()
     nn.test()

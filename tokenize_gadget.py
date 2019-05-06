@@ -1,10 +1,12 @@
 import sys
 import pandas
+from gensim.models import Word2Vec
+import numpy
 
 # DEBUG
-import joblib
-import pprint
-df = joblib.load('df.dump')
+#import joblib
+#import pprint
+#df = joblib.load('df.dump')
 # ##
 
 # Sets for operators
@@ -58,7 +60,25 @@ def tokenize(line):
     res = list(filter(lambda c: c != '', tmp))
     return list(filter(lambda c: c != ' ', res))
 
-
+def vectorize(gadget):
+    tokenized = []
+    for line in gadget:
+        tokenized.append(tokenize(line))
+    model = Word2Vec(tokenized, min_count=1)
+    embeddings = model.wv
+    del model
+    vectors = []
+    size = 0
+    for line in tokenized:
+        for token in line:
+            size += 1
+            embedding = embeddings[token]
+            if vectors == []:
+                vectors = embedding
+            else:
+                vectors = numpy.add(vectors, embedding)
+    return numpy.true_divide(vectors, size)
+    
 
 # Input: dataframe
 def tokenize_df(df):

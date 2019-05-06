@@ -16,7 +16,7 @@ keywords = frozenset({'__asm', '__builtin', '__cdecl', '__declspec', '__except',
                       'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_assert',
                       'static_cast', 'struct', 'switch', 'template', 'this', 'thread_local', 'throw', 'true', 'try',
                       'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile',
-                      'wchar_t', 'while', 'xor', 'xor_eq'})
+                      'wchar_t', 'while', 'xor', 'xor_eq', 'NULL'})
 # holds known non-user-defined functions; immutable set
 main_set = frozenset({'main'})
 # arguments in main function; immutable set
