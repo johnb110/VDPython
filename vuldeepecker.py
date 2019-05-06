@@ -4,6 +4,7 @@ Interface to VulDeePecker project
 import sys
 import pandas
 from CleanGadget import clean_gadget
+from tokenize_gadget import tokenize_df
 
 def vectorize(gadget):
     return gadget
@@ -70,7 +71,9 @@ def main():
         row = {"gadget" : vector, "val" : val}
         gadgets.append(row)
     df = pandas.DataFrame(gadgets)
-    print(df)
+    df = tokenize_df(df)
+
+    print(df['tokenized_gadget'][0])
     nn = NeuralNet(df)
     nn.train()
     nn.test()
