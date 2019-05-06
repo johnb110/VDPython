@@ -1,0 +1,24 @@
+Differentiating between pointers and multiplication for user-defined classes:
+What are the situations for pointers? 
+	Variable and function declarations
+	Must be on the LEFT of an equals sign, if present
+		Except for lambda expressions...
+What are the situations for multiplication? 
+	Must be on the RIGHT of an equals sign, if present
+How to detect function declarations? 
+	Any function that has a type immediately preceding
+	For lambda expressions: function that has closed bracket "]" immediately preceding
+
+How to decide if VARx*VARy is class*variable or variable*variable? 
+	Check to see if inside function definition:
+		If inside function:
+			If class/variable immediately preceding -> class*variable
+		If inside parentheses, check if inside lambda expression
+			If "]" immediately preceding "(", then lambda expression -> class*variable
+	Check to see if variable declaration:
+		If no equals sign -> class*variable
+		If equals sign:
+			If to the left of equals, then variable declaration -> class*variable
+			Else -> variable*variable
+	
+ 
