@@ -2,13 +2,10 @@
 Interface to VulDeePecker project
 """
 import sys
+import os
 import pandas
 from CleanGadget import clean_gadget
-from tokenize_gadget import tokenize_df
 from tokenize_gadget import vectorize
-
-#def vectorize(gadget):
-    #return gadget
 
 class NeuralNet:
     def __init__(self, data):
@@ -48,21 +45,15 @@ def parse_file(filename):
                         gadget.append(stripped)
             else:
                 gadget.append(stripped)
-            
+
 """
-Use parse_file to get gadgets
+Uses gadget file parser to get gadgets and vulnerability indicators
 Use vectorize function to get gadget vectors
 Assuming all gadgets can fit in memory, build list of gadget dictionaries
     Dictionary contains gadget vector and vulnerability indicator
 Convert list of dictionaries to dataframe when all gadgets are processed
-Instantiate neural network, pass data to it, train, test, print accuracy
 """
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: python vuldeepecker.py [filename]")
-        exit()
-    filename = sys.argv[1]
-    parse_file(filename)
+def get_vectors_df(filename):
     gadgets = []
     count = 0
     for gadget, val in parse_file(filename):
@@ -71,11 +62,26 @@ def main():
         vector = vectorize(gadget)
         row = {"gadget" : vector, "val" : val}
         gadgets.append(row)
+    print()
     df = pandas.DataFrame(gadgets)
-    print(df)
-    #df = tokenize_df(df)
-
-    #print(df['tokenized_gadget'][0])
+    return df
+            
+"""
+Gets filename, either loads vector DataFrame if exists or creates it if not
+Instantiate neural network, pass data to it, train, test, print accuracy
+"""
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python vuldeepecker.py [filename]")
+        exit()
+    filename = sys.argv[1]
+    parse_file(filename)
+    vector_filename = os.path.splitext(os.path.basename(filename))[0] + "_gadget_vectors.pkl"
+    if os.path.exists(vector_filename):
+        df = pandas.read_pickle(vector_filename)
+    else:
+        df = get_vectors_df(filename)
+        df.to_pickle(vector_filename)
     nn = NeuralNet(df)
     nn.train()
     nn.test()

@@ -1,7 +1,12 @@
 import sys
+
+import warnings
+warnings.filterwarnings("ignore")
+
 import pandas
 from gensim.models import Word2Vec
 import numpy
+
 
 # DEBUG
 #import joblib
@@ -25,7 +30,11 @@ operators1 = {
     '{', '}'
     }
 
-# Input: string 
+"""
+Takes a line of C++ code (string) as input
+Tokenizes C++ code (breaks down into identifier, variables, keywords, operators)
+Returns a list of tokens, preserving order in which they appear
+"""
 def tokenize(line):
     tmp, w = [], []
     i = 0
@@ -60,6 +69,12 @@ def tokenize(line):
     res = list(filter(lambda c: c != '', tmp))
     return list(filter(lambda c: c != ' ', res))
 
+"""
+Uses Word2Vec to create a vector for each gadget
+Treats lines in gadget as sentences
+Creates model based on tokens in lines
+Gets a vector for the gadget by averaging all token vectors
+"""
 def vectorize(gadget):
     tokenized = []
     for line in gadget:
@@ -80,7 +95,9 @@ def vectorize(gadget):
     return numpy.true_divide(vectors, size)
     
 
-# Input: dataframe
+"""
+Tokenizes every gadget in a pandas DataFrame
+"""
 def tokenize_df(df):
     tokenized_gadgets = []
     # Apply tokenize to every line of dataframe
@@ -89,9 +106,3 @@ def tokenize_df(df):
         tokenized_gadgets.append(l)
     df['tokenized_gadget'] = tokenized_gadgets
     return df
-
-# Debug
-# df = tokenize_df(df)
-# print(len(df['tokenized_gadget'][0]))
-# print(len(df['gadget'][0]))
-#  ##
