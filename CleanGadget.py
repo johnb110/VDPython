@@ -48,8 +48,10 @@ def clean_gadget(gadget):
         if rx_comment.search(line) is None:
             # remove all string literals (keep the quotes)
             nostrlit_line = re.sub(r'".*?"', '""', line)
+            # remove all character literals
+            nocharlit_line = re.sub(r"'.*?'", "''", nostrlit_line)
             # replace any non-ASCII characters with empty string
-            ascii_line = re.sub(r'[^\x00-\x7f]', r'', nostrlit_line)
+            ascii_line = re.sub(r'[^\x00-\x7f]', r'', nocharlit_line)
 
             # return, in order, all regex matches at string list; preserves order for semantics
             user_fun = rx_fun.findall(ascii_line)
