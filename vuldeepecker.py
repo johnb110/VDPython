@@ -4,8 +4,8 @@ Interface to VulDeePecker project
 import sys
 import os
 import pandas
-from CleanGadget import clean_gadget
-from tokenize_gadget import vectorize
+from clean_gadget import clean_gadget
+from vectorize_gadget import vectorize
 from blstm import BLSTM
 
 """
@@ -49,7 +49,7 @@ def get_vectors_df(filename, vector_length=100):
     for gadget, val in parse_file(filename):
         count += 1
         print("Collecting gadgets...", count, end="\r")
-        vector = vectorize(gadget)
+        vector = vectorize(gadget, vector_length)
         row = {"gadget" : vector, "val" : val}
         gadgets.append(row)
     print()

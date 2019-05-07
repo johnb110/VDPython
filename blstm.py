@@ -1,4 +1,8 @@
 from __future__ import print_function
+
+import warnings
+warnings.filterwarnings("ignore")
+
 import numpy as np
 
 from keras.preprocessing import sequence
@@ -10,6 +14,13 @@ from sklearn.model_selection import train_test_split
 
 """
 Bidirectional LSTM neural network
+Structure consists of two hidden layers and a BLSTM layer
+Parameters, as from the VulDeePecker paper:
+    Nodes: 300
+    Dropout: 0.5
+    Optimizer: Adamax
+    Batch size: 64
+    Epochs: 4
 """
 class BLSTM:
     def __init__(self, data, length=100, name=""):
