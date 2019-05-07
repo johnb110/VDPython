@@ -4,22 +4,20 @@ import numpy as np
 from keras.preprocessing import sequence
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM, Bidirectional, Flatten
+from keras.optimizers import Adamax
 
 from sklearn.model_selection import train_test_split
 
+"""
+Bidirectional LSTM neural network
+"""
 class BLSTM:
-    def __init__(self, data, length=100):
+    def __init__(self, data, length=100, name=""):
         train, test = train_test_split(data, test_size=0.2)
         self.training_set = train
         self.test_set = test
         self.length = length
-
-    def train(self):
-        vectors = np.stack(self.training_set.iloc[:,0].values)
-        vectors = np.reshape(vectors, (vectors.shape[0], vectors.shape[1], 1))
-        #print(vectors)
-        labels = self.training_set.iloc[:,1].values
-        batch_size = 64
+        self.name = name
         model = Sequential()
         model.add(Bidirectional(LSTM(300, return_sequences=True, dropout=0.5), input_shape=(self.length,1)))
         model.add(Flatten())
@@ -28,46 +26,32 @@ class BLSTM:
         model.add(Dense(300, activation='linear'))
         model.add(Dropout(0.5))
         model.add(Dense(1, activation='relu'))
-        model.compile('adamax', 'binary_crossentropy', metrics=['accuracy'])
-        model.fit(vectors, labels, batch_size=batch_size, epochs=4)
+        # Lower learning rate to prevent divergence
+        adamax = Adamax(lr=0.001)
+        model.compile(adamax, 'binary_crossentropy', metrics=['accuracy'])
         self.model = model
 
+    """
+    Trains model based on training data
+    """
+    def train(self):
+        # Reshape array of arrays into 2D array, then 3D array
+        vectors = np.stack(self.training_set.iloc[:,0].values)
+        vectors = np.reshape(vectors, (vectors.shape[0], vectors.shape[1], 1))
+        labels = self.training_set.iloc[:,1].values
+        batch_size = 64
+        self.model.fit(vectors, labels, batch_size=batch_size, epochs=4)
+        self.model.save_weights(self.name + "_model.h5")
+
+    """
+    Tests accuracy of model based on test data
+    Loads weights from file if no weights are attached to model object
+    """
     def test(self):
-        self.model.evaluate(batch_size=64)
-        print("Accuracy is...")
-
-"""
-max_features = 20000
-# cut texts after this number of words
-# (among top max_features most common words)
-maxlen = 100
-batch_size = 32
-
-print('Loading data...')
-(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features)
-print(len(x_train), 'train sequences')
-print(len(x_test), 'test sequences')
-
-print('Pad sequences (samples x time)')
-x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
-x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
-print('x_train shape:', x_train.shape)
-print('x_test shape:', x_test.shape)
-y_train = np.array(y_train)
-y_test = np.array(y_test)
-
-model = Sequential()
-model.add(Embedding(max_features, 128, input_length=maxlen))
-model.add(Bidirectional(LSTM(64)))
-model.add(Dropout(0.5))
-model.add(Dense(1, activation='sigmoid'))
-
-# try using different optimizers and different optimizer configs
-model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
-
-print('Train...')
-model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=4,
-validation_data=[x_test, y_test])
-"""
+        if not self.model.get_weights():
+            self.model.load_weights(self.name + "_model.h5")
+        vectors = np.stack(self.test_set.iloc[:,0].values)
+        vectors = np.reshape(vectors, (vectors.shape[0], vectors.shape[1], 1))
+        labels = self.test_set.iloc[:,1].values
+        values = self.model.evaluate(vectors, labels, batch_size=64)
+        print("Accuracy is...", values[1])

@@ -75,11 +75,11 @@ Treats lines in gadget as sentences
 Creates model based on tokens in lines
 Gets a vector for the gadget by averaging all token vectors
 """
-def vectorize(gadget):
+def vectorize(gadget, vector_size=100):
     tokenized = []
     for line in gadget:
         tokenized.append(tokenize(line))
-    model = Word2Vec(tokenized, min_count=1)
+    model = Word2Vec(tokenized, min_count=1, size=vector_size)
     embeddings = model.wv
     del model
     vectors = []

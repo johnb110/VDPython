@@ -43,7 +43,7 @@ Assuming all gadgets can fit in memory, build list of gadget dictionaries
     Dictionary contains gadget vector and vulnerability indicator
 Convert list of dictionaries to dataframe when all gadgets are processed
 """
-def get_vectors_df(filename):
+def get_vectors_df(filename, vector_length=100):
     gadgets = []
     count = 0
     for gadget, val in parse_file(filename):
@@ -66,13 +66,15 @@ def main():
         exit()
     filename = sys.argv[1]
     parse_file(filename)
-    vector_filename = os.path.splitext(os.path.basename(filename))[0] + "_gadget_vectors.pkl"
+    base = os.path.splitext(os.path.basename(filename))[0]
+    vector_filename = base + "_gadget_vectors.pkl"
+    vector_length = 50
     if os.path.exists(vector_filename):
         df = pandas.read_pickle(vector_filename)
     else:
-        df = get_vectors_df(filename)
+        df = get_vectors_df(filename, vector_length)
         df.to_pickle(vector_filename)
-    blstm = BLSTM(df)
+    blstm = BLSTM(df,vector_length,name=base)
     blstm.train()
     blstm.test()
 
