@@ -30,11 +30,11 @@ class BLSTM:
         self.length = length
         self.name = name
         model = Sequential()
-        model.add(Bidirectional(LSTM(300, return_sequences=True, dropout=0.5), input_shape=(self.length,1)))
-        model.add(Flatten())
-        model.add(Dense(300, activation='linear'))
+        model.add(Bidirectional(LSTM(300, dropout=0.5), input_shape=(self.length,1)))
+        #model.add(Flatten())
+        model.add(Dense(300, activation='sigmoid'))
         model.add(Dropout(0.5))
-        model.add(Dense(300, activation='linear'))
+        model.add(Dense(300, activation='sigmoid'))
         model.add(Dropout(0.5))
         model.add(Dense(1, activation='relu'))
         # Lower learning rate to prevent divergence

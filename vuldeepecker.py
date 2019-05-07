@@ -5,7 +5,7 @@ import sys
 import os
 import pandas
 from clean_gadget import clean_gadget
-from vectorize_gadget import vectorize
+from vectorize_gadget import GadgetVectorizer
 from blstm import BLSTM
 
 """
@@ -46,14 +46,27 @@ Convert list of dictionaries to dataframe when all gadgets are processed
 def get_vectors_df(filename, vector_length=100):
     gadgets = []
     count = 0
+    vectorizer = GadgetVectorizer(vector_length)
     for gadget, val in parse_file(filename):
         count += 1
         print("Collecting gadgets...", count, end="\r")
-        vector = vectorize(gadget, vector_length)
-        row = {"gadget" : vector, "val" : val}
+        vectorizer.add_gadget(gadget)
+        row = {"gadget" : gadget, "val" : val}
         gadgets.append(row)
     print()
-    df = pandas.DataFrame(gadgets)
+    print("Training model...", end="\r")
+    vectorizer.train_model()
+    print()
+    vectors = []
+    count = 0
+    for gadget in gadgets:
+        count += 1
+        print("Processing gadgets...", count, end="\r")
+        vector = vectorizer.vectorize(gadget["gadget"])
+        row = {"vector" : vector, "val" : gadget["val"]}
+        vectors.append(row)
+    print()
+    df = pandas.DataFrame(vectors)
     return df
             
 """
