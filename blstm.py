@@ -21,19 +21,19 @@ class BLSTM:
         labels = self.training_set.iloc[:,1].values
         batch_size = 64
         model = Sequential()
-        model.add(Bidirectional(LSTM(300, return_sequences=True), input_shape=(self.length,1)))
-        model.add(Dropout(0.5))
-        #model.add(Flatten())
-        model.add(Bidirectional(LSTM(300, return_sequences=True)))
-        model.add(Dropout(0.5))
+        model.add(Bidirectional(LSTM(300, return_sequences=True, dropout=0.5), input_shape=(self.length,1)))
         model.add(Flatten())
-        model.add(Dense(1, activation='softmax'))
-        model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
+        model.add(Dense(300, activation='linear'))
+        model.add(Dropout(0.5))
+        model.add(Dense(300, activation='linear'))
+        model.add(Dropout(0.5))
+        model.add(Dense(1, activation='relu'))
+        model.compile('adamax', 'binary_crossentropy', metrics=['accuracy'])
         model.fit(vectors, labels, batch_size=batch_size, epochs=4)
         self.model = model
 
     def test(self):
-        self.model.evaluate()
+        self.model.evaluate(batch_size=64)
         print("Accuracy is...")
 
 """
