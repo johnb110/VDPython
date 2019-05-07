@@ -79,7 +79,7 @@ def vectorize(gadget, vector_size=100):
     tokenized = []
     for line in gadget:
         tokenized.append(tokenize(line))
-    model = Word2Vec(tokenized, min_count=1, size=vector_size)
+    model = Word2Vec(tokenized, min_count=1, size=vector_size, sg=1)
     embeddings = model.wv
     del model
     vectors = []
