@@ -6,17 +6,7 @@ import os
 import pandas
 from CleanGadget import clean_gadget
 from tokenize_gadget import vectorize
-
-class NeuralNet:
-    def __init__(self, data):
-        self.data = data
-    
-    def train(self):
-        pass
-    
-    def test(self):
-        print("Accuracy is...")
-        pass
+from blstm import BLSTM
 
 """
 Parses gadget file to find individual gadgets
@@ -82,9 +72,9 @@ def main():
     else:
         df = get_vectors_df(filename)
         df.to_pickle(vector_filename)
-    nn = NeuralNet(df)
-    nn.train()
-    nn.test()
+    blstm = BLSTM(df)
+    blstm.train()
+    blstm.test()
 
 if __name__ == "__main__":
     main()
