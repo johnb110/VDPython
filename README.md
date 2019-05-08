@@ -30,6 +30,7 @@ VulDeePecker algorithm implemented in Python
 ## Code Files
 * vuldeepecker.py
   * Interface to project, uses functionality from other code files
+  * Fetches each gadget, cleans, buffers, trains Word2Vec model, vectorizes, passes to neural net
 * clean_gadget.py
   * For each gadget, replaces all user variables with "VAR#" and user functions with "FUN#"
   * Removes content from string and character literals
@@ -37,7 +38,7 @@ VulDeePecker algorithm implemented in Python
   * Converts gadgets into vectors
   * Tokenizes gadget (converts to symbols, operators, keywords)
   * Uses Word2Vec to convert tokens to embeddings
-  * Takes average of all token vectors to derive vector for gadget
+  * Combines token embeddings in a gadget to create 2D gadget vector
 * blstm.py
   * Defines Bidirectional Long Short Term Memory neural network for training/prediction of vulnerabilities
   * Gets gadget vectors as input

@@ -38,9 +38,12 @@ def parse_file(filename):
 
 """
 Uses gadget file parser to get gadgets and vulnerability indicators
-Use vectorize function to get gadget vectors
 Assuming all gadgets can fit in memory, build list of gadget dictionaries
-    Dictionary contains gadget vector and vulnerability indicator
+    Dictionary contains gadgets and vulnerability indicator
+    Add each gadget to GadgetVectorizer
+Train GadgetVectorizer model, prepare for vectorization
+Loop again through list of gadgets
+    Vectorize each gadget and put vector into new list
 Convert list of dictionaries to dataframe when all gadgets are processed
 """
 def get_vectors_df(filename, vector_length=100):
