@@ -53,6 +53,8 @@ def get_vectors_df(filename, vector_length=100):
         vectorizer.add_gadget(gadget)
         row = {"gadget" : gadget, "val" : val}
         gadgets.append(row)
+    print('Found {} forward slices and {} backward slices'
+          .format(vectorizer.forward_slices, vectorizer.backward_slices))
     print()
     print("Training model...", end="\r")
     vectorizer.train_model()

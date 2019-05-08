@@ -1,3 +1,4 @@
+import re
 import sys
 
 import warnings
@@ -35,6 +36,8 @@ class GadgetVectorizer:
     def __init__(self, vector_length):
         self.gadgets = []
         self.vector_length = vector_length
+        self.forward_slices = 0
+        self.backward_slices = 0
 
     """
     Takes a line of C++ code (string) as input
@@ -79,19 +82,34 @@ class GadgetVectorizer:
     @staticmethod
     def tokenize_gadget(gadget):
         tokenized = []
+        function_regex = re.compile('FUN(\d)+')
+        backwards_slice = False
         for line in gadget:
-            tokenized += GadgetVectorizer.tokenize(line)
-        return tokenized
+            tokens = GadgetVectorizer.tokenize(line)
+            tokenized += tokens
+            if len(list(filter(function_regex.match, tokens))) > 0:
+                backwards_slice = True
+            else:
+                backwards_slice = False
+        return tokenized, backwards_slice
 
     def add_gadget(self, gadget):
-        tokenized_gadget = GadgetVectorizer.tokenize_gadget(gadget)
+        tokenized_gadget, backwards_slice = GadgetVectorizer.tokenize_gadget(gadget)
         self.gadgets.append(tokenized_gadget)
+        if backwards_slice:
+            self.backward_slices += 1
+        else:
+            self.forward_slices += 1
 
     def vectorize(self, gadget):
-        tokenized_gadget = GadgetVectorizer.tokenize_gadget(gadget)
+        tokenized_gadget, backwards_slice = GadgetVectorizer.tokenize_gadget(gadget)
         vectors = numpy.zeros(shape=(50, self.vector_length))
-        for i in range(min(len(tokenized_gadget), 50)):
-            vectors[i] = self.embeddings[tokenized_gadget[i]]
+        if backwards_slice:
+            for i in range(min(len(tokenized_gadget), 50)):
+                vectors[50 - 1 - i] = self.embeddings[tokenized_gadget[len(tokenized_gadget) - 1 - i]]
+        else:
+            for i in range(min(len(tokenized_gadget), 50)):
+                vectors[i] = self.embeddings[tokenized_gadget[i]]
         return vectors
 
     def train_model(self):

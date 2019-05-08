@@ -31,7 +31,13 @@ class BLSTM:
     def __init__(self, data, name="", batch_size=64):
         vectors = np.stack(data.iloc[:, 1].values)
         labels = data.iloc[:, 0].values
-        X_train, X_test, y_train, y_test = train_test_split(vectors, labels, test_size=0.2, stratify=labels)
+        positive_idxs = np.where(labels == 1)[0]
+        negative_idxs = np.where(labels == 0)[0]
+        undersampled_negative_idxs = np.random.choice(negative_idxs, len(positive_idxs), replace=False)
+        resampled_idxs = np.concatenate([positive_idxs, undersampled_negative_idxs])
+
+        X_train, X_test, y_train, y_test = train_test_split(vectors[resampled_idxs, ], labels[resampled_idxs],
+                                                            test_size=0.2, stratify=labels[resampled_idxs])
         self.X_train = X_train
         self.X_test = X_test
         self.y_train = to_categorical(y_train)
