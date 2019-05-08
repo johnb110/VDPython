@@ -71,8 +71,7 @@ class BLSTM:
     Loads weights from file if no weights are attached to model object
     """
     def test(self):
-        if not self.model.get_weights():
-            self.model.load_weights(self.name + "_model.h5")
+        self.model.load_weights(self.name + "_model.h5")
         values = self.model.evaluate(self.X_test, self.y_test, batch_size=self.batch_size)
         print("Accuracy is...", values[1])
         predictions = (self.model.predict(self.X_test, batch_size=self.batch_size)).round()
