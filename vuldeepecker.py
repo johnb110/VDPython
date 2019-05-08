@@ -87,7 +87,7 @@ def main():
     else:
         df = get_vectors_df(filename, vector_length)
         df.to_pickle(vector_filename)
-    blstm = BLSTM(df,vector_length,name=base)
+    blstm = BLSTM(df,name=base)
     blstm.train()
     blstm.test()
 
