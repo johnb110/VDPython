@@ -15,12 +15,12 @@ VulDeePecker algorithm implemented in Python
 * To run program, use this command: `python vuldeepecker.py [gadget_file]`, where gadget_file is one of the text files containing a gadget set
 * Program has 3 parts:
   * Performing gadget "cleaning"
-    * Remove comments
+    * Remove comments, string/character literals
     * Replacing all user-defined variables and functions with VAR# and FUN#, respectively
       * The # is an integer identifying the user-defined variable/function within the gadget
       * Note: this identifier only applies within the scope of the gadget
   * Vectorize gadget
-    * Gadgets are parsed, tokenized, and transformed to vectors
+    * Gadgets are parsed, tokenized, and transformed to vectors of embeddings
     * Vectors are normalized to a constant length through either truncation or padding
   * Train and test neural model
     * Gadget vectors are used as input to train the neural model 
